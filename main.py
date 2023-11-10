@@ -1,14 +1,15 @@
 from os import path
 import random
+from enemy import new_bush, new_fly
+import strategy
 
 import pygame
 
-# TODO: add fly
-# TODO: fix sprites
+
 # TODO: add pause, menu, game over screen
 # TODO: score counter
 # TODO: highscore table
-# TODO: draw ground and sky
+
 # TODO: animations
 
 class Fox:
@@ -26,7 +27,7 @@ class Fox:
         self.image = pygame.transform.scale2x(image)
 
         self.rect = self.image.get_rect()
-        self.rect.center = (100, ground)
+        self.rect.bottomleft = (100, ground)
 
         self.y = ground
         self.speed_y = 0
@@ -45,7 +46,7 @@ class Fox:
             self.y = self.ground
             self.speed_y = 0
 
-        self.rect.center = (100, self.y)
+        self.rect.bottomleft = (100, self.y)
 
     def process_key(self, event):
         if event.key == pygame.K_SPACE:
@@ -64,25 +65,6 @@ class Fox:
         return self.y == self.ground
 
 
-class Cactus:
-    image: pygame.Surface
-    rect: pygame.Rect
-    x: int
-    speed_x: int
-
-    def __init__(self, x, y, speed_x):
-        image = pygame.image.load(path.join('assets', 'cactus.png'))
-        self.image = pygame.transform.scale_by(image, 2)
-
-        self.rect = self.image.get_rect()
-        self.rect.center = (x, y)
-
-        self.speed_x = speed_x
-
-    def update(self):
-        x, y = self.rect.topleft
-        x -= self.speed_x
-        self.rect.topleft = (x, y)
 
 
 
@@ -103,6 +85,7 @@ enemy_timer = base_spawn_time
 fox = Fox(ground)
 enemies = []
 
+
 clock = pygame.time.Clock()
 
 def spawn_enemy():
@@ -111,19 +94,20 @@ def spawn_enemy():
     print(choice)
     offset = random.randint(-bound, bound)
     if choice == 1 or choice == 2:
-        enemies.append(Cactus(width + bound + offset, ground, game_speed))
+        enemies.append(new_bush(width + bound + offset, ground, game_speed))
     elif choice == 3:
         sphread = random.randint(10, 50)
-        enemies.append(Cactus(width + bound, ground, game_speed))
-        enemies.append(Cactus(width + bound + sphread, ground, game_speed))
-        enemies.append(Cactus(width + bound + 2 * sphread, ground, game_speed))
+        enemies.append(new_bush(width + bound, ground, game_speed))
+        enemies.append(new_bush(width + bound + sphread, ground, game_speed))
+        enemies.append(new_bush(width + bound + 2 * sphread, ground, game_speed))
     elif choice == 4:
         fly_y = 100
-        enemies.append(Cactus(width, ground - fly_y, game_speed))
+        enemies.append(new_fly(width, ground - fly_y, game_speed))
         # spawn fly
 
 
-
+image_sky = pygame.image.load(path.join("assets", "sky.png"))
+image_dirt = pygame.image.load(path.join("assets", "dirt.png"))
 is_running = True
 while is_running:
     for event in pygame.event.get():
@@ -135,7 +119,7 @@ while is_running:
            
 
     # updating
-    game_speed += 0.0005
+    game_speed += 0.001
 
     enemy_timer += 1
     if enemy_timer >= base_spawn_time / game_speed:
@@ -143,6 +127,7 @@ while is_running:
         enemy_timer = 0
 
     fox.update()
+    
 
     for enemy in enemies:
         enemy.update()
@@ -151,13 +136,17 @@ while is_running:
 
         if enemy.rect.colliderect(fox.rect):
             pass
-            # is_running = False
+            is_running = False
 
     
     # drawing
-    screen.fill((70, 140, 200))
+    #screen.fill((70, 140, 200))
+    screen.blit(image_dirt, (0,ground))
+    screen.blit(image_sky, (0,0))
 
     screen.blit(fox.image, fox.rect.topleft)
+
+    
 
     for enemy in enemies:
         screen.blit(enemy.image, enemy.rect.topleft)
@@ -165,6 +154,8 @@ while is_running:
     display.blit(pygame.transform.scale(screen, (width * scale, height * scale)), (0, 0))
     pygame.display.update()
     clock.tick(60)
-    
+
+
+
 
 pygame.quit()
