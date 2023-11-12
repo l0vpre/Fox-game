@@ -1,4 +1,5 @@
 from strategy import MovementStrategy
+from common import *
 import strategy
 from os import path
 import pygame
@@ -31,9 +32,7 @@ def new_bush(x,y,speed_x):
 def new_fly(x,y,speed_x):
     _image = pygame.image.load(path.join('assets', 'fly.png'))
     image = pygame.transform.scale_by(_image, 2)
-    max_y = 25
-    period = 1
-    movement_strategy = strategy.FlyMovementStrategy(speed_x, max_y, period)
+    movement_strategy = strategy.FlyMovementStrategy(speed_x, MAX_Y, PERIOD)
     return Enemy(x, y, image, movement_strategy)
 
    

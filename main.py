@@ -1,4 +1,5 @@
 import pygame
+from common import *
 from os import path
 import random
 from enemy import new_bush, new_fly
@@ -15,19 +16,16 @@ from fox import Fox
 
 pygame.init()
 
-width, height = 800, 600
-scale = 1
-scaled_dims = (width * scale, height * scale)
+
+scaled_dims = (WIDTH * SCALE, HEIGHT * SCALE)
 
 display = pygame.display.set_mode(scaled_dims)
-screen = pygame.Surface((width, height))
+screen = pygame.Surface((WIDTH, HEIGHT))
 
-ground = 450
-game_speed = 5.0
-base_spawn_time = 1500
-enemy_timer = base_spawn_time
 
-fox = Fox(ground)
+enemy_timer = BASE_SPAWN_TIME
+
+fox = Fox(GROUND)
 enemies = []
 
 
@@ -35,19 +33,18 @@ clock = pygame.time.Clock()
 
 def spawn_enemy():
     choice = random.randint(1, 4)
-    bound = 100
     print(choice)
-    offset = random.randint(-bound, bound)
+    offset = random.randint(-BOUND, BOUND)
     if choice == 1 or choice == 2:
-        enemies.append(new_bush(width + bound + offset, ground, game_speed))
+        enemies.append(new_bush(WIDTH + BOUND + offset, GROUND, GAME_SPEED))
     elif choice == 3:
         sphread = random.randint(10, 50)
-        enemies.append(new_bush(width + bound, ground, game_speed))
-        enemies.append(new_bush(width + bound + sphread, ground, game_speed))
-        enemies.append(new_bush(width + bound + 2 * sphread, ground, game_speed))
+        enemies.append(new_bush(WIDTH + BOUND, GROUND, GAME_SPEED))
+        enemies.append(new_bush(WIDTH + BOUND + sphread, GROUND, GAME_SPEED))
+        enemies.append(new_bush(WIDTH + BOUND + 2 * sphread, GROUND, GAME_SPEED))
     elif choice == 4:
         fly_y = 100
-        enemies.append(new_fly(width, ground - fly_y, game_speed))
+        enemies.append(new_fly(WIDTH, GROUND - fly_y, GAME_SPEED))
         # spawn fly
 
 
@@ -64,10 +61,10 @@ while is_running:
            
 
     # updating
-    game_speed += 0.001
+    GAME_SPEED += GAME_SPEED_GROW_FACTOR
 
     enemy_timer += 1
-    if enemy_timer >= base_spawn_time / game_speed:
+    if enemy_timer >= BASE_SPAWN_TIME / GAME_SPEED:
         spawn_enemy()
         enemy_timer = 0
 
@@ -86,7 +83,7 @@ while is_running:
     
     # drawing
     #screen.fill((70, 140, 200))
-    screen.blit(image_dirt, (0,ground))
+    screen.blit(image_dirt, (0,GROUND))
     screen.blit(image_sky, (0,0))
 
     screen.blit(fox.image, fox.rect.topleft)
@@ -96,9 +93,9 @@ while is_running:
     for enemy in enemies:
         screen.blit(enemy.image, enemy.rect.topleft)
 
-    display.blit(pygame.transform.scale(screen, (width * scale, height * scale)), (0, 0))
+    display.blit(pygame.transform.scale(screen, (WIDTH * SCALE, HEIGHT * SCALE)), (0, 0))
     pygame.display.update()
-    clock.tick(60)
+    clock.tick(FPS)
 
 
 

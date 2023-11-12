@@ -1,4 +1,6 @@
 import math
+from common import *
+
 class MovementStrategy:
    def move(self, enemy):
        pass
@@ -25,7 +27,7 @@ class FlyMovementStrategy(MovementStrategy):
    def __init__(self, speed_x,max_y, period):
          self.speed_x = speed_x
          self.frequency = 2*math.pi / period
-         self.FPS = 60.0
+         self.FPS = FPS
          self.max_y = max_y/self.FPS
          self.frame = 0.0
 
