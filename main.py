@@ -99,8 +99,8 @@ while is_running:
     for enemy in enemies:
         screen.blit(enemy.image, enemy.rect.topleft)
 
-    img = font.render(str(  round(score)), True, CORAL)
-    screen.blit(img, (0, 2))
+    text = font.render('SCORE:' + ' '+ str(  round(score)), True, CORAL)
+    screen.blit(text, (0, 2))
 
     display.blit(pygame.transform.scale(screen, (WIDTH * SCALE, HEIGHT * SCALE)), (0, 0))
     pygame.display.update()
