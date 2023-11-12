@@ -1,5 +1,6 @@
 import pygame
 from common import *
+import math
 from os import path
 import random
 from enemy import new_bush, new_fly
@@ -22,11 +23,14 @@ scaled_dims = (WIDTH * SCALE, HEIGHT * SCALE)
 display = pygame.display.set_mode(scaled_dims)
 screen = pygame.Surface((WIDTH, HEIGHT))
 
-
+game_speed = 5.0
 enemy_timer = BASE_SPAWN_TIME
 
 fox = Fox(GROUND)
 enemies = []
+score = 0
+font = pygame.font.Font(path.join("assets", "prstart.ttf"), 24)
+
 
 
 clock = pygame.time.Clock()
@@ -36,15 +40,15 @@ def spawn_enemy():
     print(choice)
     offset = random.randint(-BOUND, BOUND)
     if choice == 1 or choice == 2:
-        enemies.append(new_bush(WIDTH + BOUND + offset, GROUND, GAME_SPEED))
+        enemies.append(new_bush(WIDTH + BOUND + offset, GROUND, game_speed))
     elif choice == 3:
-        sphread = random.randint(10, 50)
-        enemies.append(new_bush(WIDTH + BOUND, GROUND, GAME_SPEED))
-        enemies.append(new_bush(WIDTH + BOUND + sphread, GROUND, GAME_SPEED))
-        enemies.append(new_bush(WIDTH + BOUND + 2 * sphread, GROUND, GAME_SPEED))
+        sphread = random.randint(10, 30             )
+        enemies.append(new_bush(WIDTH + BOUND, GROUND, game_speed))
+        enemies.append(new_bush(WIDTH + BOUND + sphread, GROUND, game_speed))
+        enemies.append(new_bush(WIDTH + BOUND + 2 * sphread, GROUND, game_speed))
     elif choice == 4:
         fly_y = 100
-        enemies.append(new_fly(WIDTH, GROUND - fly_y, GAME_SPEED))
+        enemies.append(new_fly(WIDTH, GROUND - fly_y, game_speed))
         # spawn fly
 
 
@@ -61,14 +65,16 @@ while is_running:
            
 
     # updating
-    GAME_SPEED += GAME_SPEED_GROW_FACTOR
+    game_speed += GAME_SPEED_GROW_FACTOR
 
     enemy_timer += 1
-    if enemy_timer >= BASE_SPAWN_TIME / GAME_SPEED:
+    if enemy_timer >= BASE_SPAWN_TIME / game_speed:
         spawn_enemy()
         enemy_timer = 0
 
     fox.update()
+    score += game_speed / (FPS * 4)
+       
     
 
     for enemy in enemies:
@@ -93,11 +99,15 @@ while is_running:
     for enemy in enemies:
         screen.blit(enemy.image, enemy.rect.topleft)
 
+    img = font.render(str(  round(score)), True, CORAL)
+    screen.blit(img, (0, 2))
+
     display.blit(pygame.transform.scale(screen, (WIDTH * SCALE, HEIGHT * SCALE)), (0, 0))
     pygame.display.update()
+    
     clock.tick(FPS)
 
 
-
+         
 
 pygame.quit()
