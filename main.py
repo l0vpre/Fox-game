@@ -9,7 +9,6 @@ from fox import Fox
 
 
 # TODO: add pause, menu, game over screen
-# TODO: score counter
 # TODO: highscore table
 
 # TODO: animations
@@ -31,8 +30,12 @@ enemies = []
 score = 0
 font = pygame.font.Font(path.join("assets", "prstart.ttf"), 24)
 
+image_sky = pygame.image.load(path.join("assets", "sky.png"))
+image_dirt = pygame.image.load(path.join("assets", "dirt.png"))
 
-
+image_width = image_dirt.get_width()
+tiles = math.ceil(WIDTH / image_width) + 1
+print(f'sdhksjkd {tiles}')
 clock = pygame.time.Clock()
 
 def spawn_enemy():
@@ -51,9 +54,9 @@ def spawn_enemy():
         enemies.append(new_fly(WIDTH, GROUND - fly_y, game_speed))
         # spawn fly
 
+scroll_ground = 0.0
+scroll_sky = 0.0
 
-image_sky = pygame.image.load(path.join("assets", "sky.png"))
-image_dirt = pygame.image.load(path.join("assets", "dirt.png"))
 is_running = True
 while is_running:
     for event in pygame.event.get():
@@ -67,6 +70,7 @@ while is_running:
     # updating
     game_speed += GAME_SPEED_GROW_FACTOR
 
+    
     enemy_timer += 1
     if enemy_timer >= BASE_SPAWN_TIME / game_speed:
         spawn_enemy()
@@ -89,8 +93,20 @@ while is_running:
     
     # drawing
     #screen.fill((70, 140, 200))
-    screen.blit(image_dirt, (0,GROUND))
-    screen.blit(image_sky, (0,0))
+    for tile in range (tiles):
+        screen.blit(image_dirt, (tile*WIDTH - int(scroll_ground), GROUND))
+        screen.blit(image_sky, (tile*WIDTH - int(scroll_sky),0))
+    
+    scroll_ground += game_speed
+    scroll_sky += 0.5
+    if(scroll_ground >= image_width):
+        scroll_ground = 0
+    
+    if(scroll_sky >= image_width):
+        scroll_sky = 0      
+
+    
+    
 
     screen.blit(fox.image, fox.rect.topleft)
 
