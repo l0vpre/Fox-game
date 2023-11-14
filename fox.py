@@ -39,13 +39,6 @@ class Fox:
 
         self.rect.bottomleft = (100, int(self.y))
 
-    def process_key(self, event):
-        if event.key == pygame.K_SPACE:
-            if event.type == pygame.KEYDOWN:
-                self.is_jumping = True
-            elif event.type == pygame.KEYUP:
-                self.is_jumping = False
-
     def jump(self):
         if not self.is_on_ground():
             return    

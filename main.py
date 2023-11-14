@@ -130,11 +130,11 @@ def running_event_handler(event):
     if event.type == pygame.KEYDOWN:
         if event.key == pygame.K_ESCAPE:
             state = PAUSE
-        elif event.key in [pygame.K_SPACE]:
-            fox.process_key(event)
+        elif event.key == pygame.K_SPACE:
+            fox.is_jumping = True
     elif event.type == pygame.KEYUP:
-        if event.key in [pygame.K_SPACE]:
-            fox.process_key(event)
+        if event.key== pygame.K_SPACE:
+            fox.is_jumping = False
 
 def pause_event_handler(event):
     global state
@@ -179,6 +179,7 @@ screen = pygame.Surface((WIDTH, HEIGHT))
 game_speed = 5.0
 enemy_timer = BASE_SPAWN_TIME
 score = 0
+highscore = 0 # TODO: show score and highscore on game over screen
 state = START
 clock = pygame.time.Clock()
 
@@ -235,6 +236,7 @@ while is_running:
         draw_fox()
         draw_enemy()
         draw_text_pause()
+        draw_score()
 
     elif state == GAME_OVER:
         draw_fox()
