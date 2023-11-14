@@ -2,8 +2,6 @@ import pygame
 from os import path
 from common import *
 
-#TODO: chande y to float 
-#TODO: put the constants in the file common.py
 class Fox:
     image: pygame.Surface
     rect: pygame.Rect
@@ -60,7 +58,4 @@ class Fox:
     def reset(self):
         self.y = self.ground
         self.speed_y = 0
-
-
-
 

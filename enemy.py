@@ -35,4 +35,3 @@ def new_fly(x,y,speed_x):
     movement_strategy = strategy.FlyMovementStrategy(speed_x, MAX_Y, PERIOD)
     return Enemy(x, y, image, movement_strategy)
 
-   

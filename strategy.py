@@ -37,3 +37,4 @@ class FlyMovementStrategy(MovementStrategy):
          speed_y = self.max_y* self.frequency * math.cos(time*self.frequency)
          enemy.y += speed_y
          self.frame += 1
+
