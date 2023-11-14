@@ -39,7 +39,7 @@ class Fox:
             self.y = self.ground
             self.speed_y = 0
 
-        self.rect.bottomleft = (100, self.y)
+        self.rect.bottomleft = (100, int(self.y))
 
     def process_key(self, event):
         if event.key == pygame.K_SPACE:

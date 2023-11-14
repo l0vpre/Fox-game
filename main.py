@@ -16,10 +16,10 @@ def draw_text_start():
     text2 = font_small.render('Press space to start' , True, BLACK)
 
     rect1 = text1.get_rect()
-    rect1.center = ((WIDTH // 2), (HEIGHT // 2))
+    rect1.center = (int(WIDTH // 2), int(HEIGHT // 2))
 
     rect2 = text2.get_rect()
-    rect2.center = (WIDTH // 2, HEIGHT-40)
+    rect2.center = (int(WIDTH // 2), int(HEIGHT-40))
 
     screen.blit(text1, rect1.topleft)
     screen.blit(text2, rect2.topleft)
@@ -29,10 +29,10 @@ def draw_text_pause():
     text2 = font_small.render('Press space to continue' , True, BLACK)
 
     rect1 = text1.get_rect()
-    rect1.center = ((WIDTH // 2), (HEIGHT // 2))
+    rect1.center = (WIDTH // 2, HEIGHT // 2)
 
     rect2 = text2.get_rect()
-    rect2.center = (WIDTH // 2, HEIGHT-40)
+    rect2.center = (WIDTH // 2, HEIGHT - 40)
 
     screen.blit(text1, rect1.topleft)
     screen.blit(text2, rect2.topleft)
@@ -42,10 +42,10 @@ def draw_text_game_over():
     text2 = font_small.render('Press z to start the game again..' , True, BLACK)
 
     rect1 = text1.get_rect()
-    rect1.center = ((WIDTH // 2), (HEIGHT // 2))
+    rect1.center = (WIDTH // 2, HEIGHT // 2)
 
     rect2 = text2.get_rect()
-    rect2.center = (WIDTH // 2, HEIGHT-40)
+    rect2.center = (WIDTH // 2, HEIGHT - 40)
 
     screen.blit(text1, rect1.topleft)
     screen.blit(text2, rect2.topleft)
