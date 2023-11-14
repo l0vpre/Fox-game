@@ -68,8 +68,8 @@ def spawn_enemy() -> None:
 
 def draw_background() -> None:
     for tile in range (tiles):
-        screen.blit(image_dirt, (tile*common.WIDTH - int(scroll_ground), common.GROUND))
-        screen.blit(image_sky, (tile*common.WIDTH - int(scroll_sky),0))
+        screen.blit(image_dirt, (tile * common.WIDTH - int(scroll_ground), common.GROUND))
+        screen.blit(image_sky, (tile * common.WIDTH - int(scroll_sky), 0))
 
 def draw_text_start() -> None:
     text1: pygame.surface.Surface = font_big.render('Start' , True, common.CORAL)
@@ -171,6 +171,7 @@ def reset_game():
     score = 0.0
 
 pygame.init()
+enemy.load_images()
 
 # display
 scaled_dims: (Tuple[int, int]) = (common.WIDTH * common.SCALE, common.HEIGHT * common.SCALE)
@@ -202,8 +203,12 @@ font: pygame.font.Font = pygame.font.Font(path.join("assets", "prstart.ttf"), 24
 font_big: pygame.font.Font = pygame.font.Font(path.join("assets", "prstart.ttf"), 50)
 font_small: pygame.font.Font = pygame.font.Font(path.join("assets", "prstart.ttf"), 15)
 
-image_sky: pygame.surface.Surface = pygame.image.load(path.join("assets", "sky.png"))
-image_dirt: pygame.surface.Surface = pygame.image.load(path.join("assets", "dirt.png"))
+image_sky: pygame.surface.Surface = pygame.image.load(
+    path.join("assets", "sky.png")
+).convert_alpha()
+image_dirt: pygame.surface.Surface = pygame.image.load(
+    path.join("assets", "dirt.png")
+).convert_alpha()
 
 image_width: int = image_dirt.get_width()
 tiles: int = math.ceil(common.WIDTH / image_width) + 1

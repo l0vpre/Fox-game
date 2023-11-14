@@ -14,8 +14,10 @@ class Fox:
     def __init__(self, ground: int) -> None:
         self.ground = ground
 
-        image: pygame.Surface = pygame.image.load(path.join("assets", "fox.png"))
-        self.image = pygame.transform.scale2x(image)
+        image: pygame.Surface = pygame.image.load(
+            path.join("assets", "fox.png")
+        ).convert_alpha()
+        self.image = pygame.transform.scale_by(image, 2)
 
         self.rect = self.image.get_rect()
         self.rect.bottomleft = (100, ground)

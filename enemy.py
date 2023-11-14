@@ -61,19 +61,25 @@ class Enemy:
         self.rect.bottomleft = (int(self.x),int(self.y))
     
 
+bush_image: pygame.Surface 
+fly_image: pygame.Surface 
+
+def load_images():
+    global bush_image
+    global fly_image
+
+    bush_image = pygame.image.load(path.join('assets', 'rosebush.png'))
+    bush_image = pygame.transform.scale_by(bush_image, 2)
+
+    fly_image = pygame.image.load(path.join('assets', 'fly.png'))
+    fly_image = pygame.transform.scale_by(fly_image, 2)
+
+
 def new_bush(x: float, y: float, speed_x: float) -> Enemy:
-    image: pygame.Surface = pygame.image.load(path.join('assets', 'rosebush.png'))
-    image = pygame.transform.scale_by(image, 2)
-
     movement_strategy: MovementStrategy = BushMovementStrategy(speed_x)
-
-    return Enemy(x, y, image, movement_strategy)
+    return Enemy(x, y, bush_image, movement_strategy)
 
 def new_fly(x: float, y: float, speed_x: float) -> Enemy:
-    image: pygame.Surface = pygame.image.load(path.join('assets', 'fly.png'))
-    image = pygame.transform.scale_by(image, 2)
-
     movement_strategy: MovementStrategy = FlyMovementStrategy(speed_x, MAX_Y, PERIOD)
-
-    return Enemy(x, y, image, movement_strategy)
+    return Enemy(x, y, fly_image, movement_strategy)
 
