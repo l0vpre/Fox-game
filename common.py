@@ -10,6 +10,7 @@ PERIOD = 1
 
 CORAL = (240, 117, 87)
 BLACK = (0,0,0)
+
 START = 1
 RUNNING = 2
 PAUSE = 3

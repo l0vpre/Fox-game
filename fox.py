@@ -56,6 +56,10 @@ class Fox:
 
     def is_on_ground(self):
         return self.y == self.ground
+    
+    def reset(self):
+        self.y = self.ground
+        self.speed_y = 0
 
 
 

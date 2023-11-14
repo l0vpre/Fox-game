@@ -37,7 +37,6 @@ def draw_text_pause():
     screen.blit(text1, rect1.topleft)
     screen.blit(text2, rect2.topleft)
 
-
 def draw_text_game_over():
     text1 = font_big.render('GAME OVER' , True, CORAL)
     text2 = font_small.render('Press z to start the game again..' , True, BLACK)
@@ -51,7 +50,6 @@ def draw_text_game_over():
     screen.blit(text1, rect1.topleft)
     screen.blit(text2, rect2.topleft)
 
-
 def draw_fox(fox):
     screen.blit(fox.image, fox.rect.topleft)
 
@@ -59,6 +57,67 @@ def draw_enemy():
     for enemy in enemies:
             screen.blit(enemy.image, enemy.rect.topleft)
     
+def start_event_handler(event):
+    global state
+    global event_handler
+    if event.type == pygame.KEYDOWN:
+        if event.key == pygame.K_SPACE:
+            state = RUNNING
+            event_handler = running_event_handler
+       
+       
+def running_event_handler(event):
+    global state
+    global event_handler
+    if event.type == pygame.KEYDOWN:
+        if event.key == pygame.K_ESCAPE:
+            state = PAUSE
+            event_handler = pause_event_handler
+        elif event.key in [pygame.K_SPACE]:
+            fox.process_key(event)
+    elif event.type == pygame.KEYUP:
+        if event.key in [pygame.K_SPACE]:
+            fox.process_key(event)
+
+
+def pause_event_handler(event):
+    global state
+    global event_handler
+    if event.type == pygame.KEYDOWN:
+        if event.key == pygame.K_ESCAPE:
+            state = RUNNING
+            event_handler = running_event_handler
+
+    
+def game_over_event_handler(event):
+    global state
+    global event_handler
+    
+    if event.type == pygame.KEYDOWN:
+        if event.key == pygame.K_SPACE:
+            reset_game()
+            state = RUNNING
+            event_handler = running_event_handler
+
+def reset_game():
+    global enemies
+    global game_speed
+    global scroll_ground
+    global scroll_sky
+    global enemy_timer
+    global fox
+    global score
+
+    enemies.clear()
+    game_speed = 5.0
+    scroll_ground = 0.0
+    scroll_sky = 0.0
+    enemy_timer = BASE_SPAWN_TIME
+    fox.reset()
+    score = 0.0
+
+    
+
 
 # TODO: add pause, menu, game over screen
 # TODO: highscore table
@@ -80,6 +139,8 @@ enemy_timer = BASE_SPAWN_TIME
 fox = Fox(GROUND)
 enemies = []
 score = 0
+
+event_handler = start_event_handler
 
 
 font = pygame.font.Font(path.join("assets", "prstart.ttf"), 24)
@@ -117,23 +178,16 @@ scroll_sky = 0.0
 
 is_running = True
 while is_running:
+
+    current_event_handler = event_handler
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             is_running = False
-        elif event.type == pygame.KEYDOWN or event.type == pygame.KEYUP:
-            if event.key == pygame.K_SPACE and state == START:
-                state = RUNNING       
-            elif event.key in [pygame.K_SPACE]:
-                fox.process_key(event)
-            elif event.key == pygame.K_ESCAPE and state == RUNNING:
-                state = PAUSE
-            elif event.key == pygame.K_ESCAPE and state == PAUSE:
-                state == RUNNING
-            elif event.key == pygame.K_z:
-                state == RUNNING
-        
-           
-    
+        else:
+            current_event_handler(event)
+            
+
     if state == START:
         draw_sky_and_ground()
         draw_text_start()
