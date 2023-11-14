@@ -26,6 +26,7 @@ def update_game():
 
 def update_physics():
     global state
+    global event_handler
 
     fox.update()
     
@@ -35,6 +36,7 @@ def update_physics():
             enemies.remove(enemy)
         if enemy.rect.colliderect(fox.rect):
             state = GAME_OVER
+            event_handler = game_over_event_handler
 
 def update_animations():
     global scroll_ground
@@ -119,19 +121,15 @@ def draw_enemy():
     
 def start_event_handler(event):
     global state
-    global event_handler
     if event.type == pygame.KEYDOWN:
         if event.key == pygame.K_SPACE:
             state = RUNNING
-            event_handler = running_event_handler
        
 def running_event_handler(event):
     global state
-    global event_handler
     if event.type == pygame.KEYDOWN:
         if event.key == pygame.K_ESCAPE:
             state = PAUSE
-            event_handler = pause_event_handler
         elif event.key in [pygame.K_SPACE]:
             fox.process_key(event)
     elif event.type == pygame.KEYUP:
@@ -140,11 +138,9 @@ def running_event_handler(event):
 
 def pause_event_handler(event):
     global state
-    global event_handler
     if event.type == pygame.KEYDOWN:
         if event.key == pygame.K_ESCAPE:
             state = RUNNING
-            event_handler = running_event_handler
     
 def game_over_event_handler(event):
     global state
@@ -154,7 +150,6 @@ def game_over_event_handler(event):
         if event.key == pygame.K_SPACE:
             reset_game()
             state = RUNNING
-            event_handler = running_event_handler
 
 def reset_game():
     global enemies
@@ -184,9 +179,16 @@ screen = pygame.Surface((WIDTH, HEIGHT))
 game_speed = 5.0
 enemy_timer = BASE_SPAWN_TIME
 score = 0
-event_handler = start_event_handler
 state = START
 clock = pygame.time.Clock()
+
+# event handlers
+event_handlers = {
+    START: start_event_handler,
+    RUNNING: running_event_handler,
+    PAUSE: pause_event_handler,
+    GAME_OVER: game_over_event_handler
+}
 
 # entities
 fox = Fox(GROUND)
@@ -208,15 +210,15 @@ scroll_sky = 0.0
 
 is_running = True
 while is_running:
-    current_event_handler = event_handler
+    event_handler = event_handlers[state]
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             is_running = False
         else:
-            current_event_handler(event)
+            event_handler(event)
             
-
     draw_background()
+
     if state == START:
         draw_text_start()
         draw_fox()
