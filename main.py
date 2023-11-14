@@ -1,30 +1,32 @@
+from collections.abc import Callable
+from typing import Dict, List, Tuple
 import pygame
-from common import *
 import math
+import common
 from os import path
 import random
-from enemy import new_bush, new_fly
+import enemy
 from fox import Fox
 
 # TODO: highscore table
 # TODO: Испраление паузы (и гемовера)
 # TODO: animations
 
-def update_game():
+def update_game() -> None:
     global game_speed
     global enemy_timer
     global score
 
-    game_speed += GAME_SPEED_GROW_FACTOR
+    game_speed += common.GAME_SPEED_GROW_FACTOR
     
     enemy_timer += 1
-    if enemy_timer >= BASE_SPAWN_TIME / game_speed:
+    if enemy_timer >= common.BASE_SPAWN_TIME / game_speed:
         spawn_enemy()
         enemy_timer = 0
     
-    score += game_speed / (FPS * 4)
+    score += game_speed / (common.FPS * 4)
 
-def update_physics():
+def update_physics() -> None:
     global state
     global event_handler
 
@@ -35,10 +37,10 @@ def update_physics():
         if enemy.rect.right < 0:
             enemies.remove(enemy)
         if enemy.rect.colliderect(fox.rect):
-            state = GAME_OVER
+            state = common.GAME_OVER
             event_handler = game_over_event_handler
 
-def update_animations():
+def update_animations() -> None:
     global scroll_ground
     global scroll_sky
 
@@ -50,66 +52,66 @@ def update_animations():
     if(scroll_sky >= image_width):
         scroll_sky = 0      
 
-def spawn_enemy():
-    choice = random.randint(1, 4)
-    offset = random.randint(-BOUND, BOUND)
+def spawn_enemy() -> None:
+    choice: int = random.randint(1, 4)
+    offset: int = random.randint(-common.BOUND, common.BOUND)
     if choice == 1 or choice == 2:
-        enemies.append(new_bush(WIDTH + BOUND + offset, GROUND, game_speed))
+        enemies.append(enemy.new_bush(common.WIDTH + common.BOUND + offset, common.GROUND, game_speed))
     elif choice == 3:
-        sphread = random.randint(10, 30             )
-        enemies.append(new_bush(WIDTH + BOUND, GROUND, game_speed))
-        enemies.append(new_bush(WIDTH + BOUND + sphread, GROUND, game_speed))
-        enemies.append(new_bush(WIDTH + BOUND + 2 * sphread, GROUND, game_speed))
+        sphread: int = random.randint(10, 30             )
+        enemies.append(enemy.new_bush(common.WIDTH + common.BOUND, common.GROUND, game_speed))
+        enemies.append(enemy.new_bush(common.WIDTH + common.BOUND + sphread, common.GROUND, game_speed))
+        enemies.append(enemy.new_bush(common.WIDTH + common.BOUND + 2 * sphread, common.GROUND, game_speed))
     elif choice == 4:
-        fly_y = 100
-        enemies.append(new_fly(WIDTH, GROUND - fly_y, game_speed))
+        fly_y: int = 100
+        enemies.append(enemy.new_fly(common.WIDTH, common.GROUND - fly_y, game_speed))
 
-def draw_background():
+def draw_background() -> None:
     for tile in range (tiles):
-        screen.blit(image_dirt, (tile*WIDTH - int(scroll_ground), GROUND))
-        screen.blit(image_sky, (tile*WIDTH - int(scroll_sky),0))
+        screen.blit(image_dirt, (tile*common.WIDTH - int(scroll_ground), common.GROUND))
+        screen.blit(image_sky, (tile*common.WIDTH - int(scroll_sky),0))
 
-def draw_text_start():
-    text1 = font_big.render('Start' , True, CORAL)
-    text2 = font_small.render('Press space to start' , True, BLACK)
+def draw_text_start() -> None:
+    text1: pygame.surface.Surface = font_big.render('Start' , True, common.CORAL)
+    text2: pygame.surface.Surface = font_small.render('Press space to start' , True, common.BLACK)
 
-    rect1 = text1.get_rect()
-    rect1.center = (int(WIDTH // 2), int(HEIGHT // 2))
+    rect1: pygame.Rect = text1.get_rect()
+    rect1.center = (int(common.WIDTH // 2), int(common.HEIGHT // 2))
 
-    rect2 = text2.get_rect()
-    rect2.center = (int(WIDTH // 2), int(HEIGHT-40))
-
-    screen.blit(text1, rect1.topleft)
-    screen.blit(text2, rect2.topleft)
-
-def draw_text_pause():
-    text1 = font_big.render('Pause' , True, CORAL)
-    text2 = font_small.render('Press space to continue' , True, BLACK)
-
-    rect1 = text1.get_rect()
-    rect1.center = (WIDTH // 2, HEIGHT // 2)
-
-    rect2 = text2.get_rect()
-    rect2.center = (WIDTH // 2, HEIGHT - 40)
+    rect2: pygame.Rect = text2.get_rect()
+    rect2.center = (int(common.WIDTH // 2), int(common.HEIGHT-40))
 
     screen.blit(text1, rect1.topleft)
     screen.blit(text2, rect2.topleft)
 
-def draw_text_game_over():
-    text1 = font_big.render('GAME OVER' , True, CORAL)
-    text2 = font_small.render('Press z to start the game again..' , True, BLACK)
+def draw_text_pause() -> None:
+    text1: pygame.surface.Surface = font_big.render('Pause' , True, common.CORAL)
+    text2: pygame.surface.Surface = font_small.render('Press space to continue' , True, common.BLACK)
 
-    rect1 = text1.get_rect()
-    rect1.center = (WIDTH // 2, HEIGHT // 2)
+    rect1:pygame.Rect = text1.get_rect()
+    rect1.center = (common.WIDTH // 2, common.HEIGHT // 2)
 
-    rect2 = text2.get_rect()
-    rect2.center = (WIDTH // 2, HEIGHT - 40)
+    rect2: pygame.Rect = text2.get_rect()
+    rect2.center = (common.WIDTH // 2, common.HEIGHT - 40)
+
+    screen.blit(text1, rect1.topleft)
+    screen.blit(text2, rect2.topleft)
+
+def draw_text_game_over() -> None:
+    text1: pygame.surface.Surface = font_big.render('GAME OVER' , True, common.CORAL)
+    text2: pygame.surface.Surface = font_small.render('Press SPACE to start the game again..' , True, common.BLACK)
+
+    rect1: pygame.Rect = text1.get_rect()
+    rect1.center = (common.WIDTH // 2, common.HEIGHT // 2)
+
+    rect2: pygame.Rect = text2.get_rect()
+    rect2.center = (common.WIDTH // 2, common.HEIGHT - 40)
 
     screen.blit(text1, rect1.topleft)
     screen.blit(text2, rect2.topleft)
 
 def draw_score():
-    text = font.render('SCORE:' + ' '+ str(  round(score)), True, CORAL)
+    text: pygame.surface.Surface = font.render('SCORE:' + ' '+ str(  round(score)), True, common.CORAL)
     screen.blit(text, (0, 2))
 
 def draw_fox():
@@ -117,19 +119,19 @@ def draw_fox():
 
 def draw_enemy():
     for enemy in enemies:
-            screen.blit(enemy.image, enemy.rect.topleft)
+        screen.blit(enemy.image, enemy.rect.topleft)
     
 def start_event_handler(event):
     global state
     if event.type == pygame.KEYDOWN:
         if event.key == pygame.K_SPACE:
-            state = RUNNING
+            state = common.RUNNING
        
 def running_event_handler(event):
     global state
     if event.type == pygame.KEYDOWN:
         if event.key == pygame.K_ESCAPE:
-            state = PAUSE
+            state = common.PAUSE
         elif event.key == pygame.K_SPACE:
             fox.is_jumping = True
     elif event.type == pygame.KEYUP:
@@ -140,7 +142,7 @@ def pause_event_handler(event):
     global state
     if event.type == pygame.KEYDOWN:
         if event.key == pygame.K_ESCAPE:
-            state = RUNNING
+            state = common.RUNNING
     
 def game_over_event_handler(event):
     global state
@@ -149,7 +151,7 @@ def game_over_event_handler(event):
     if event.type == pygame.KEYDOWN:
         if event.key == pygame.K_SPACE:
             reset_game()
-            state = RUNNING
+            state = common.RUNNING
 
 def reset_game():
     global enemies
@@ -164,54 +166,54 @@ def reset_game():
     game_speed = 5.0
     scroll_ground = 0.0
     scroll_sky = 0.0
-    enemy_timer = BASE_SPAWN_TIME
+    enemy_timer = common.BASE_SPAWN_TIME
     fox.reset()
     score = 0.0
 
 pygame.init()
 
 # display
-scaled_dims = (WIDTH * SCALE, HEIGHT * SCALE)
-display = pygame.display.set_mode(scaled_dims)
-screen = pygame.Surface((WIDTH, HEIGHT))
+scaled_dims: (Tuple[int, int]) = (common.WIDTH * common.SCALE, common.HEIGHT * common.SCALE)
+display: pygame.surface.Surface = pygame.display.set_mode(scaled_dims)
+screen: pygame.surface.Surface = pygame.Surface((common.WIDTH, common.HEIGHT))
 
 # game
-game_speed = 5.0
-enemy_timer = BASE_SPAWN_TIME
-score = 0
-highscore = 0 # TODO: show score and highscore on game over screen
-state = START
-clock = pygame.time.Clock()
+game_speed: float = 5.0
+enemy_timer: float = common.BASE_SPAWN_TIME
+score: float = 0
+highscore: float = 0 # TODO: show score and highscore on game over screen
+state: int = common.START
+clock: pygame.time.Clock = pygame.time.Clock()
 
 # event handlers
-event_handlers = {
-    START: start_event_handler,
-    RUNNING: running_event_handler,
-    PAUSE: pause_event_handler,
-    GAME_OVER: game_over_event_handler
+event_handlers: Dict[int, Callable[[pygame.event.Event], None]] = {
+    common.START: start_event_handler,
+    common.RUNNING: running_event_handler,
+    common.PAUSE: pause_event_handler,
+    common.GAME_OVER: game_over_event_handler
 }
 
 # entities
-fox = Fox(GROUND)
-enemies = []
+fox: Fox = Fox(common.GROUND)
+enemies: List[enemy.Enemy] = []
 
 # graphics
-font = pygame.font.Font(path.join("assets", "prstart.ttf"), 24)
-font_big = pygame.font.Font(path.join("assets", "prstart.ttf"), 50)
-font_small = pygame.font.Font(path.join("assets", "prstart.ttf"), 15)
+font: pygame.font.Font = pygame.font.Font(path.join("assets", "prstart.ttf"), 24)
+font_big: pygame.font.Font = pygame.font.Font(path.join("assets", "prstart.ttf"), 50)
+font_small: pygame.font.Font = pygame.font.Font(path.join("assets", "prstart.ttf"), 15)
 
-image_sky = pygame.image.load(path.join("assets", "sky.png"))
-image_dirt = pygame.image.load(path.join("assets", "dirt.png"))
+image_sky: pygame.surface.Surface = pygame.image.load(path.join("assets", "sky.png"))
+image_dirt: pygame.surface.Surface = pygame.image.load(path.join("assets", "dirt.png"))
 
-image_width = image_dirt.get_width()
-tiles = math.ceil(WIDTH / image_width) + 1
+image_width: int = image_dirt.get_width()
+tiles: int = math.ceil(common.WIDTH / image_width) + 1
 
-scroll_ground = 0.0
-scroll_sky = 0.0
+scroll_ground: float = 0.0
+scroll_sky: float = 0.0
 
-is_running = True
+is_running: bool = True
 while is_running:
-    event_handler = event_handlers[state]
+    event_handler: Callable[[pygame.event.Event], None] = event_handlers[state]
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             is_running = False
@@ -220,11 +222,11 @@ while is_running:
             
     draw_background()
 
-    if state == START:
+    if state == common.START:
         draw_text_start()
         draw_fox()
           
-    elif state == RUNNING:
+    elif state == common.RUNNING:
         update_game()
         update_physics()
         update_animations()
@@ -232,21 +234,22 @@ while is_running:
         draw_fox()
         draw_enemy()
         
-    elif state == PAUSE:
+    elif state == common.PAUSE:
         draw_fox()
         draw_enemy()
         draw_text_pause()
         draw_score()
 
-    elif state == GAME_OVER:
+    elif state == common.GAME_OVER:
         draw_fox()
         draw_enemy()
         draw_text_game_over()
 
-    display.blit(pygame.transform.scale(screen, (WIDTH * SCALE, HEIGHT * SCALE)), (0, 0))
+    display.blit(pygame.transform.scale(screen, (common.WIDTH * common.SCALE, common.HEIGHT * common.SCALE)), (0, 0))
     pygame.display.update()
     
-    clock.tick(FPS)
+    clock.tick(common.FPS)
+    
 
 pygame.quit()
 

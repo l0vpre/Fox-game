@@ -11,22 +11,22 @@ class Fox:
     is_jumping: bool
     ground: int
 
-    def __init__(self, GROUND):
-        self.ground = GROUND
+    def __init__(self, ground: int) -> None:
+        self.ground = ground
 
-        image = pygame.image.load(path.join("assets", "fox.png"))
+        image: pygame.Surface = pygame.image.load(path.join("assets", "fox.png"))
         self.image = pygame.transform.scale2x(image)
 
         self.rect = self.image.get_rect()
-        self.rect.bottomleft = (100, GROUND)
+        self.rect.bottomleft = (100, ground)
 
-        self.y = GROUND 
+        self.y = ground 
         self.speed_y = 0
         self.accel_y = 1
 
         self.is_jumping = False
 
-    def update(self):
+    def update(self) -> None:
         if self.is_jumping:
             self.jump()
 
@@ -39,16 +39,16 @@ class Fox:
 
         self.rect.bottomleft = (100, int(self.y))
 
-    def jump(self):
+    def jump(self) -> None:
         if not self.is_on_ground():
             return    
 
         self.speed_y = -20
 
-    def is_on_ground(self):
+    def is_on_ground(self) -> bool:
         return self.y == self.ground
     
-    def reset(self):
+    def reset(self) -> None:
         self.y = self.ground
         self.speed_y = 0
 
